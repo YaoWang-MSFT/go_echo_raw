@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: goecho
-          image: goechovalidation.azurecr.io/goechoimage:latest
+          image: ywregistry001.azurecr.io/image003:latest
           ports:
             - containerPort: 1323
