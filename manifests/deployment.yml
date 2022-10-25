@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "akswangyao1025-ad28"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "akswangyao1025-ad28"
+  template:
+    metadata:
+      labels:
+        app: "akswangyao1025-ad28"
+    spec:
+      containers:
+        - name: "akswangyao1025-ad28"
+          image: "ywregistry1025001.azurecr.io/akswangyao1025"
+          ports:
+          - containerPort: 80
