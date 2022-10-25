@@ -11,8 +11,8 @@ env:
     CLUSTER_RESOURCE_GROUP: ywang-rg-aks-0809
     CONTAINER_NAME: image1025
     DEPLOYMENT_MANIFEST_PATH: |
-        ./manifests/deployment.yaml
-        ./manifests/service.yaml
+        ./manifests/deployment.yml
+        ./manifests/service.yml
 jobs:
     buildImage:
         permissions:
