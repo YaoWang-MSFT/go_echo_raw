@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: wyregistry.azurecr.io
+        username: ${{ secrets.acr_wyregistry_username }}
+        password: ${{ secrets.acr_wyregistry_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/" -f  "Dockerfile" -t wyregistry.azurecr.io/akswangyao1201:${{ github.sha }} --label dockerfile-path=Dockerfile
+        docker push wyregistry.azurecr.io/akswangyao1201:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_akswangyao1201_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep go-echo | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace go-echo`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: go-echo
+        container-registry-url: wyregistry.azurecr.io
+        container-registry-username: ${{ secrets.acr_wyregistry_username }}
+        container-registry-password: ${{ secrets.acr_wyregistry_password }}
+        secret-name: akswangyao12dockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: go-echo
+        manifests: |
+          manifests/deployment-1.yml
+          manifests/service-1.yml
+        images: |
+          wyregistry.azurecr.io/akswangyao1201:${{ github.sha }}
+        imagepullsecrets: |
+          akswangyao12dockerauth
