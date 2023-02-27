@@ -13,7 +13,7 @@ spec:
         app: "akswangyao1025"
     spec:
       containers:
-        - name: "image1025"
-          image: "ywregistry1025.azurecr.io/image1025"
+        - name: "test"
+          image: "acrworkflow1677122162587.azurecr.io/test"
           ports:
           - containerPort: 80
